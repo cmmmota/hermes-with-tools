@@ -3,6 +3,7 @@
   "extends": [
     "config:recommended"
   ],
+  "dependencyDashboard": true,
   "schedule": ["on the weekend"],
   "packageRules": [
     {
