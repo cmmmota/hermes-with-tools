@@ -4,7 +4,7 @@
     "config:recommended"
   ],
   "dependencyDashboard": true,
-  "schedule": ["on the weekend"],
+  "schedule": ["every weekend"],
   "packageRules": [
     {
       "description": "Auto-merge GitHub Actions patch/digest updates",
