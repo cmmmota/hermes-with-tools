@@ -9,6 +9,7 @@ This image extends the base Hermes Agent image with the following tools:
 - **`kubectl`**: The Kubernetes command-line tool, used for communicating with a Kubernetes cluster's control plane.
 - **`gh`**: The GitHub CLI, providing a command-line interface for GitHub features like issues, pull requests, and GitHub Actions.
 - **`jq`**: A lightweight and flexible command-line JSON processor, perfect for parsing and manipulating API responses.
+- **`caldav`**: A Python CalDAV client library, pre-installed in the agent's virtual environment.
 
 ## Base Image
 
@@ -35,10 +36,10 @@ To run the container locally and verify the tools are installed:
 
 ```bash
 docker run --rm -it ghcr.io/cmmmota/hermes-with-tools:latest bash
-# Inside the container:
 kubectl version --client
 gh --version
 jq --version
+/opt/hermes/.venv/bin/python3 -c "import caldav; print('caldav version:', caldav.__version__)"
 ```
 
 ## License

@@ -24,3 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # --- cleanup ---
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+# Pre-install caldav python library in the virtual environment and preserve ownership
+RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
+    && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
+    && chown -R "$owner" /opt/hermes/.venv
