@@ -1,4 +1,4 @@
-FROM nousresearch/hermes-agent:v2026.7.20@sha256:f7b35053268f532f98955195c909f15a230470fbcbdacaa9fdecb95707dad04a
+FROM nousresearch/hermes-agent:v2026.7.30@sha256:b869e64d6496d4763d5e4fb675b5f504cb23b0e35ec9b790481a56118602b10f
 
 # Install kubectl, gh (GitHub CLI), and jq
 # kubectl and gh are not in standard Debian repos, so we add their official apt sources.
