@@ -1,22 +1,49 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
   ],
-  "dependencyDashboard": true,
-  "schedule": ["every weekend"],
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "timezone": "Europe/Lisbon",
+  "rebaseWhen": "conflicted",
+  "automergeSchedule": [
+    "* 9-16 * * 1-4"
+  ],
+  "platformAutomerge": false,
   "packageRules": [
     {
-      "description": "Auto-merge GitHub Actions patch/digest updates",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["patch", "digest"],
-      "automerge": true
+      "description": "Auto merge minor, patch, pin, and digest updates",
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
+      "automerge": true,
+      "ignoreTests": true
     },
     {
-      "description": "Auto-merge Docker digest updates for base image",
-      "matchManagers": ["dockerfile"],
-      "matchUpdateTypes": ["digest"],
-      "automerge": true
+      "description": "Auto merge Github Actions",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "automerge": true,
+      "ignoreTests": true
+    },
+    {
+      "description": "Auto merge Docker base image updates",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "automerge": true,
+      "ignoreTests": true
     }
   ]
 }
