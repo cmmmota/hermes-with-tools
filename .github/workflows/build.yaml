@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - Dockerfile
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -25,15 +26,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Read base image version
+        id: base
+        run: |
+          version=$(sed -n -E 's/^FROM nousresearch\/hermes-agent:([^@[:space:]]+).*/\1/p' Dockerfile)
+          if [ -z "$version" ]; then
+            echo "::error file=Dockerfile::Could not read nousresearch/hermes-agent tag from FROM line"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}
+          # <base> moves to the newest build on that base version;
+          # <base>-<sha> is immutable and pins an exact build.
           tags: |
+            type=raw,value=${{ steps.base.outputs.version }},priority=1000
+            type=raw,value=${{ steps.base.outputs.version }}-{{sha}},priority=900
             type=sha,prefix=,format=short
             type=ref,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.base.name=docker.io/nousresearch/hermes-agent:${{ steps.base.outputs.version }}
 
       - name: Build and push
         uses: docker/build-push-action@v7

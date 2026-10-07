@@ -22,6 +22,17 @@ This repository uses GitHub Actions to automatically build and push the Docker i
 
 **Image Registry:** `ghcr.io/cmmmota/hermes-with-tools`
 
+### Tags
+
+Image versions follow the base `nousresearch/hermes-agent` tag in the `Dockerfile`:
+
+| Tag | Example | Behaviour |
+| --- | --- | --- |
+| `<base>` | `v2026.9.24` | Newest build on that base version. Moves if the `Dockerfile` changes without a base bump. |
+| `<base>-<sha>` | `v2026.9.24-af81a39` | Immutable. Pins one exact build. |
+| `<sha>` | `af81a39` | Immutable. Short commit SHA. |
+| `latest`, `main` | | Newest build from `main`. |
+
 ## Usage
 
 You can use this image in your Kubernetes deployments or run it locally:
