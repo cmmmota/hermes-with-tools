@@ -18,7 +18,7 @@ The image is built on top of:
 
 ## CI/CD
 
-This repository uses GitHub Actions to automatically build and push the Docker image to the GitHub Container Registry (GHCR) whenever the `Dockerfile` is updated on the `main` branch.
+This repository uses GitHub Actions to automatically build and push the Docker image to the GitHub Container Registry (GHCR) whenever the `Dockerfile` or the build workflow is updated on the `main` branch, or when the workflow is run manually.
 
 **Image Registry:** `ghcr.io/cmmmota/hermes-with-tools`
 
