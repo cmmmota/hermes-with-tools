@@ -28,3 +28,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
     && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
     && chown -R "$owner" /opt/hermes/.venv
+# agent-browser drives the browser_* tools. Hermes only needs the CLI here: the
+# browser itself is a headless-shell sidecar reached over CDP (browser.cdp_url),
+# so no Chromium is installed in this image. Pinned to the range Hermes itself
+# resolves via npx (AGENT_BROWSER_NPX_SPEC in tools/browser_tool.py); without a
+# global install it would fall back to npx and cache under $HOME, the backed-up PVC.
+RUN npm install -g agent-browser@0.26.0 \
+    && npm cache clean --force \
+    && agent-browser --version
