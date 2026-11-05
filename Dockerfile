@@ -37,3 +37,6 @@ RUN set -- /opt/hermes/tools/uv-*/ \
 RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
     && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
     && chown -R "$owner" /opt/hermes/.venv
+# Start in the writable data dir, where the gateway's terminal already runs by
+# default. In /opt/hermes, uv finds Hermes' own pyproject.toml and tries to build it.
+WORKDIR /opt/data
