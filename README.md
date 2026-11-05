@@ -10,7 +10,7 @@ This image extends the base Hermes Agent image with the following tools:
 - **`gh`**: The GitHub CLI, providing a command-line interface for GitHub features like issues, pull requests, and GitHub Actions.
 - **`jq`**: A lightweight and flexible command-line JSON processor, perfect for parsing and manipulating API responses.
 - **`caldav`**: A Python CalDAV client library, pre-installed in the agent's virtual environment.
-- **`agent-browser`**: The CLI behind Hermes' `browser_*` tools. No browser is bundled: point it at an external Chromium over CDP (`BROWSER_CDP_URL`).
+- **`uv`**, **`uvx`**: Hermes' pinned copies of the Python package manager, put on `PATH` for skills that run them directly.
 
 ## Base Image
 
@@ -29,8 +29,8 @@ Image versions follow the base `nousresearch/hermes-agent` tag in the `Dockerfil
 
 | Tag | Example | Behaviour |
 | --- | --- | --- |
-| `<base>` | `v2026.9.24` | Newest build on that base version. Moves if the `Dockerfile` changes without a base bump. |
-| `<base>-<sha>` | `v2026.9.24-af81a39` | Immutable. Pins one exact build. |
+| `<base>` | `v0.22.7` | Newest build on that base version. Moves if the `Dockerfile` changes without a base bump. |
+| `<base>-<sha>` | `v0.22.7-af81a39` | Immutable. Pins one exact build. |
 | `<sha>` | `af81a39` | Immutable. Short commit SHA. |
 | `latest`, `main` | | Newest build from `main`. |
 
@@ -51,7 +51,7 @@ docker run --rm -it ghcr.io/cmmmota/hermes-with-tools:latest bash
 kubectl version --client
 gh --version
 jq --version
-agent-browser --version
+uv --version
 /opt/hermes/.venv/bin/python3 -c "import caldav; print('caldav version:', caldav.__version__)"
 ```
 

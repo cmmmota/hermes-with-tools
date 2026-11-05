@@ -1,4 +1,4 @@
-FROM nousresearch/hermes-agent:v2026.9.24@sha256:fca358f12efd65bfaaca05884166f15c0e2788375ca30d77061ac1ebc96452b7
+FROM nousresearch/hermes-agent:v0.22.7@sha256:e6d81ae52ebf6a43efa529701405509f20054ba818f179ddd748bed4f8af584c
 
 # Install kubectl, gh (GitHub CLI), and jq
 # kubectl and gh are not in standard Debian repos, so we add their official apt sources.
@@ -25,15 +25,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # --- cleanup ---
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-# Pre-install caldav python library in the virtual environment and preserve ownership
+# Skills run uv and uvx directly, but Hermes keeps its pinned copies in a versioned
+# tool store dir that is not on PATH. The glob survives upstream uv bumps, and the
+# build fails unless it matches exactly one directory.
+RUN set -- /opt/hermes/tools/uv-*/ \
+    && [ "$#" -eq 1 ] && [ -d "$1" ] \
+    && ln -s "${1}uv" "${1}uvx" /usr/local/bin/ \
+    && uv --version \
+    && uvx --version
+# Pre-install caldav python library in the virtual environment and preserve ownership.
+# The pinned packages are baked in because the pod runs as uid 10000, where Hermes'
+# boot dependency refresh fails, and v0.22.7 no longer reads /opt/data/lazy-packages.
 RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
-    && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
+    && uv pip install --python /opt/hermes/.venv/bin/python3 \
+        "caldav" \
+        "hindsight-client==0.10.1" \
+        "firecrawl-py==4.53.2" \
+        "edge-tts==7.3.1" \
     && chown -R "$owner" /opt/hermes/.venv
-# agent-browser drives the browser_* tools. Hermes only needs the CLI here: the
-# browser itself is a headless-shell sidecar reached over CDP (browser.cdp_url),
-# so no Chromium is installed in this image. Pinned to the range Hermes itself
-# resolves via npx (AGENT_BROWSER_NPX_SPEC in tools/browser_tool.py); without a
-# global install it would fall back to npx and cache under $HOME, the backed-up PVC.
-RUN npm install -g agent-browser@0.26.0 \
-    && npm cache clean --force \
-    && agent-browser --version
+# Start in the writable data dir, where the gateway's terminal already runs by
+# default. In /opt/hermes, uv finds Hermes' own pyproject.toml and tries to build it.
+WORKDIR /opt/data

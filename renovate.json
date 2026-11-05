@@ -38,12 +38,28 @@
       "ignoreTests": true
     },
     {
-      "description": "Auto merge Docker base image updates",
+      "description": "Auto merge Docker base image updates, except major versions",
       "matchManagers": [
         "dockerfile"
       ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automerge": true,
       "ignoreTests": true
+    },
+    {
+      "description": "Hermes moved from v2026.x to v0.x tags. Only allow vMAJOR.MINOR.PATCH with a major below 1000, which drops the old calendar tags (they would sort as newer) and rc.*, -desktop, -amd64/-arm64, main, latest and stable",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "nousresearch/hermes-agent"
+      ],
+      "allowedVersions": "/^v(0|[1-9][0-9]{0,2})\\.[0-9]+\\.[0-9]+$/"
     }
   ]
 }
