@@ -10,7 +10,7 @@ This image extends the base Hermes Agent image with the following tools:
 - **`gh`**: The GitHub CLI, providing a command-line interface for GitHub features like issues, pull requests, and GitHub Actions.
 - **`jq`**: A lightweight and flexible command-line JSON processor, perfect for parsing and manipulating API responses.
 - **`caldav`**: A Python CalDAV client library, pre-installed in the agent's virtual environment.
-- **`agent-browser`**: A standalone browser automation CLI. Hermes no longer uses it: its browser tool is `browser_exec`, which ships with the base image.
+- **`uv`**, **`uvx`**: Hermes' pinned copies of the Python package manager, put on `PATH` for skills that run them directly.
 
 ## Base Image
 
@@ -51,7 +51,7 @@ docker run --rm -it ghcr.io/cmmmota/hermes-with-tools:latest bash
 kubectl version --client
 gh --version
 jq --version
-agent-browser --version
+uv --version
 /opt/hermes/.venv/bin/python3 -c "import caldav; print('caldav version:', caldav.__version__)"
 ```
 

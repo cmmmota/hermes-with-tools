@@ -25,16 +25,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # --- cleanup ---
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-# Pre-install caldav python library in the virtual environment and preserve ownership.
-# Hermes no longer puts uv on PATH; its pinned copy lives in a versioned store dir.
+# Skills run uv and uvx directly, but Hermes keeps its pinned copies in a versioned
+# tool store dir that is not on PATH. The glob survives upstream uv bumps, and the
+# build fails unless it matches exactly one directory.
+RUN set -- /opt/hermes/tools/uv-*/ \
+    && [ "$#" -eq 1 ] && [ -d "$1" ] \
+    && ln -s "${1}uv" "${1}uvx" /usr/local/bin/ \
+    && uv --version \
+    && uvx --version
+# Pre-install caldav python library in the virtual environment and preserve ownership
 RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
-    && /opt/hermes/tools/uv-*/uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
+    && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
     && chown -R "$owner" /opt/hermes/.venv
-# agent-browser is a standalone CLI. Hermes itself no longer uses it: its browser
-# tool is browser_exec (browser-harness, shipped in the base venv), and upstream
-# removed AGENT_BROWSER_NPX_SPEC, so this pin no longer tracks a Hermes range.
-# --prefix keeps it on PATH: npm's default global prefix is the versioned Node
-# dir in Hermes' tool store, which is not on PATH.
-RUN npm install -g --prefix /usr/local agent-browser@0.26.0 \
-    && npm cache clean --force \
-    && agent-browser --version
