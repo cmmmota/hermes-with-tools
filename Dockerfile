@@ -33,9 +33,15 @@ RUN set -- /opt/hermes/tools/uv-*/ \
     && ln -s "${1}uv" "${1}uvx" /usr/local/bin/ \
     && uv --version \
     && uvx --version
-# Pre-install caldav python library in the virtual environment and preserve ownership
+# Pre-install caldav python library in the virtual environment and preserve ownership.
+# The pinned packages are baked in because the pod runs as uid 10000, where Hermes'
+# boot dependency refresh fails, and v0.22.7 no longer reads /opt/data/lazy-packages.
 RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
-    && uv pip install --python /opt/hermes/.venv/bin/python3 "caldav" \
+    && uv pip install --python /opt/hermes/.venv/bin/python3 \
+        "caldav" \
+        "hindsight-client==0.10.1" \
+        "firecrawl-py==4.17.0" \
+        "edge-tts==7.2.7" \
     && chown -R "$owner" /opt/hermes/.venv
 # Start in the writable data dir, where the gateway's terminal already runs by
 # default. In /opt/hermes, uv finds Hermes' own pyproject.toml and tries to build it.
