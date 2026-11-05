@@ -38,9 +38,15 @@
       "ignoreTests": true
     },
     {
-      "description": "Auto merge Docker base image updates",
+      "description": "Auto merge Docker base image updates, except major versions",
       "matchManagers": [
         "dockerfile"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
       ],
       "automerge": true,
       "ignoreTests": true
