@@ -40,8 +40,8 @@ RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
     && uv pip install --python /opt/hermes/.venv/bin/python3 \
         "caldav" \
         "hindsight-client==0.10.1" \
-        "firecrawl-py==4.17.0" \
-        "edge-tts==7.2.7" \
+        "firecrawl-py==4.53.2" \
+        "edge-tts==7.3.1" \
     && chown -R "$owner" /opt/hermes/.venv
 # Start in the writable data dir, where the gateway's terminal already runs by
 # default. In /opt/hermes, uv finds Hermes' own pyproject.toml and tries to build it.
