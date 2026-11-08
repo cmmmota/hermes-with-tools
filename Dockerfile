@@ -43,6 +43,20 @@ RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
         "firecrawl-py==4.53.2" \
         "edge-tts==7.3.1" \
     && chown -R "$owner" /opt/hermes/.venv
+# The claude CLI backs the claude-subscription-directsdk provider plugin, which
+# runs Hermes turns on a Claude Pro/Max login. npm's default global prefix sits in
+# Hermes' versioned node dir, which is not on PATH, so install under /usr/local.
+# The login lives in $HOME/.claude on the PVC; the image only carries the binary,
+# and the auto-updater stays off because uid 10000 cannot write /usr/local.
+# Its postinstall fetches the native binary, and this npm blocks install scripts
+# unless the package is allowed by name.
+# renovate: datasource=npm depName=@anthropic-ai/claude-code
+ARG CLAUDE_CODE_VERSION=2.1.319
+ENV DISABLE_AUTOUPDATER=1
+RUN npm install -g --prefix /usr/local --allow-scripts=@anthropic-ai/claude-code \
+        "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
+    && npm cache clean --force \
+    && claude --version
 # Start in the writable data dir, where the gateway's terminal already runs by
 # default. In /opt/hermes, uv finds Hermes' own pyproject.toml and tries to build it.
 WORKDIR /opt/data
