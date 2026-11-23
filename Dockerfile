@@ -51,7 +51,7 @@ RUN owner=$(stat -c '%u:%g' /opt/hermes/.venv) \
 # Its postinstall fetches the native binary, and this npm blocks install scripts
 # unless the package is allowed by name.
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_CODE_VERSION=2.1.325
+ARG CLAUDE_CODE_VERSION=2.1.330
 ENV DISABLE_AUTOUPDATER=1
 RUN npm install -g --prefix /usr/local --allow-scripts=@anthropic-ai/claude-code \
         "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
