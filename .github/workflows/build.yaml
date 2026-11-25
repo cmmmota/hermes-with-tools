@@ -1,4 +1,4 @@
-name: Build and push to GHCR
+name: Build and push to Gitea
 
 on:
   push:
@@ -14,18 +14,28 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Log in to GHCR
+      # Job pods have no Docker daemon: the build runs on the cluster's
+      # buildkitd (k8s_homelab kubernetes/apps/buildkit), reachable only from
+      # the runner's job pods.
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v4
+        with:
+          driver: remote
+          endpoint: tcp://buildkitd.buildkit.svc.cluster.local:1234
+
+      # Gitea's registry refuses the job token (it carries no package scope),
+      # so pushes use ci-bot's write:package token, a BCDHome org secret.
+      - name: Log in to Gitea
         uses: docker/login-action@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: gitea.bcdhome.net
+          username: ci-bot
+          password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Read base image version
         id: base
@@ -41,7 +51,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v6
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: gitea.bcdhome.net/${{ github.repository }}
           # <base> moves to the newest build on that base version;
           # <base>-<sha> is immutable and pins an exact build.
           tags: |

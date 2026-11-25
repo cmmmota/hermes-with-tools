@@ -19,9 +19,9 @@ The image is built on top of:
 
 ## CI/CD
 
-This repository uses GitHub Actions to automatically build and push the Docker image to the GitHub Container Registry (GHCR) whenever the `Dockerfile` or the build workflow is updated on the `main` branch, or when the workflow is run manually.
+This repository uses Gitea Actions to automatically build and push the Docker image to the Gitea container registry whenever the `Dockerfile` or the build workflow is updated on the `main` branch, or when the workflow is run manually.
 
-**Image Registry:** `ghcr.io/cmmmota/hermes-with-tools`
+**Image Registry:** `gitea.bcdhome.net/bcdhome/hermes-with-tools`
 
 ### Tags
 
@@ -36,10 +36,13 @@ Image versions follow the base `nousresearch/hermes-agent` tag in the `Dockerfil
 
 ## Usage
 
-You can use this image in your Kubernetes deployments or run it locally:
+You can use this image in your Kubernetes deployments or run it locally. The
+registry requires sign-in, so log in first with a Gitea token that has the
+`read:package` scope:
 
 ```bash
-docker pull ghcr.io/cmmmota/hermes-with-tools:latest
+docker login gitea.bcdhome.net
+docker pull gitea.bcdhome.net/bcdhome/hermes-with-tools:latest
 ```
 
 ### Local Testing
@@ -47,7 +50,7 @@ docker pull ghcr.io/cmmmota/hermes-with-tools:latest
 To run the container locally and verify the tools are installed:
 
 ```bash
-docker run --rm -it ghcr.io/cmmmota/hermes-with-tools:latest bash
+docker run --rm -it gitea.bcdhome.net/bcdhome/hermes-with-tools:latest bash
 kubectl version --client
 gh --version
 jq --version
