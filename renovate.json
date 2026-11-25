@@ -5,7 +5,9 @@
     ":dependencyDashboard",
     ":semanticCommits"
   ],
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "dependencyDashboard": {
+    "title": "Renovate Dashboard 🤖"
+  },
   "timezone": "Europe/Lisbon",
   "rebaseWhen": "conflicted",
   "automergeSchedule": [
