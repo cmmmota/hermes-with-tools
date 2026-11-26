@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # kubectl must stay within one minor of the cluster, so it is the release binary
 # pinned here (and tracked by Renovate) rather than a pkgs.k8s.io minor channel.
 # renovate: datasource=github-releases depName=kubernetes/kubernetes
-ARG KUBECTL_VERSION=v1.37.2
+ARG KUBECTL_VERSION=v1.37.3
 RUN url="https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/$(dpkg --print-architecture)/kubectl" \
     && curl -fsSLo /usr/local/bin/kubectl "$url" \
     && echo "$(curl -fsSL "$url.sha256")  /usr/local/bin/kubectl" | sha256sum -c - \
