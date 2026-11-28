@@ -58,7 +58,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Its postinstall fetches the native binary, and this npm blocks install scripts
 # unless the package is allowed by name. npm's cache is a BuildKit cache mount.
 # renovate: datasource=npm depName=@anthropic-ai/claude-code
-ARG CLAUDE_CODE_VERSION=2.1.330
+ARG CLAUDE_CODE_VERSION=2.1.332
 ENV DISABLE_AUTOUPDATER=1
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g --prefix /usr/local --allow-scripts=@anthropic-ai/claude-code \
